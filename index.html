@@ -97,43 +97,54 @@
   </style>
 </head>
 <body>
-  <h1 id="page-title">🔮 Truth Quest 🔮</h1>
 
-  <div id="riddle-section" class="riddle-container">
-    <img id="riddle-img" class="riddle-img" src="" alt="Riddle Image" />
-    <div id="riddle-theme" class="theme-label"></div>
-    <div id="riddle-mechanics" class="mechanics"></div>
-    <p id="riddle-text">Loading...</p>
+  <!-- Start Screen -->
+  <div id="start-screen" class="riddle-container">
+    <h2>🎮 Ready to begin the Retro Riddle Quest?</h2>
+    <button onclick="startGame()">Start Quest</button>
+  </div>
 
-    <div id="answer-block">
-      <input type="text" id="riddle-answer" placeholder="Type your answer..." />
-      <br />
-      <button onclick="submitAnswer()" id="submit-button">Submit</button>
+  <!-- Game Content -->
+  <div id="game-content" class="hidden">
+    <h1 id="page-title">🔮 Truth Quest 🔮</h1>
+
+    <div id="riddle-section" class="riddle-container">
+      <img id="riddle-img" class="riddle-img" src="" alt="Riddle Image" />
+      <div id="riddle-theme" class="theme-label"></div>
+      <div id="riddle-mechanics" class="mechanics"></div>
+      <p id="riddle-text">Loading...</p>
+
+      <div id="answer-block">
+        <input type="text" id="riddle-answer" placeholder="Type your answer..." />
+        <br />
+        <button onclick="submitAnswer()" id="submit-button">Submit</button>
+      </div>
+
+      <div id="next-block" class="hidden">
+        <button onclick="goToNextRiddle()" id="next-button">Next</button>
+      </div>
     </div>
 
-    <div id="next-block" class="hidden">
-      <button onclick="goToNextRiddle()" id="next-button">Next</button>
+    <div id="final-message" class="hidden riddle-container">
+      <h2 id="final-title">🎉 Congratulations, Riddle Master! 🎉</h2>
+      <p id="final-text">You've solved all riddles.</p>
+    </div>
+
+    <div class="corner-help">
+      <button onclick="toggleHint('hint1')">Hint 1</button>
+      <div id="hint1" class="hint-text">Loading...</div>
+
+      <button onclick="toggleHint('hint2')">Hint 2</button>
+      <div id="hint2" class="hint-text">Loading...</div>
+
+      <button onclick="toggleHint('answer')">Answer</button>
+      <div id="answer" class="hint-text">Loading...</div>
     </div>
   </div>
 
-  <div id="final-message" class="hidden riddle-container">
-    <h2 id="final-title">🎉 Congratulations, Riddle Master! 🎉</h2>
-    <p id="final-text">You've solved all riddles.</p>
-  </div>
-
-  <div class="corner-help">
-    <button onclick="toggleHint('hint1')">Hint 1</button>
-    <div id="hint1" class="hint-text">Loading...</div>
-
-    <button onclick="toggleHint('hint2')">Hint 2</button>
-    <div id="hint2" class="hint-text">Loading...</div>
-
-    <button onclick="toggleHint('answer')">Answer</button>
-    <div id="answer" class="hint-text">Loading...</div>
-  </div>
-
+  <!-- JavaScript -->
   <script>
-    const riddles = [
+       const riddles = [
   {
     pageTitle: "🔮 Seer",
     text: "I’m murmured ere time, a knave cloaked in guise,Stealing delight from unwitting eyes.I tread where tales have yet to unfold,Yet utter the fates that have long been told.What am I?",
@@ -268,8 +279,15 @@
 }
 
 ];
+
     let currentRiddle = 0;
     let audio = new Audio();
+
+    function startGame() {
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("game-content").classList.remove("hidden");
+      loadRiddle(currentRiddle);
+    }
 
     function loadRiddle(index) {
       const r = riddles[index];
@@ -288,7 +306,6 @@
       document.getElementById("hint2").style.display = 'none';
       document.getElementById("answer").style.display = 'none';
 
-      // Toggle input/submit or next button based on riddle index
       if (currentRiddle >= 5) {
         document.getElementById("answer-block").classList.add("hidden");
         document.getElementById("next-block").classList.remove("hidden");
@@ -303,7 +320,9 @@
     function playSound(src) {
       audio.pause();
       audio = new Audio(src);
-      audio.play();
+      audio.play().catch(err => {
+        console.warn("Autoplay prevented:", err.message);
+      });
     }
 
     function submitAnswer() {
@@ -340,16 +359,6 @@
       const el = document.getElementById(id);
       el.style.display = el.style.display === 'none' ? 'block' : 'none';
     }
-
-    window.onload = () => {
-      loadRiddle(currentRiddle);
-    };
   </script>
 </body>
 </html>
-
-
-
-
-
-
