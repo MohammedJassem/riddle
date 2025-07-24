@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Retro Riddle Quest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      background-image: url('https://m.media-amazon.com/images/I/71XcHgvN84L._AC_SX679_.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-attachment: fixed;
+      font-family: 'Courier New', Courier, monospace;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .riddle-container {
+      margin-top: 50px;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 20px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    .riddle-img {
+      width: 128px;
+      height: 128px;
+      image-rendering: pixelated;
+      margin: 20px auto;
+      display: block;
+    }
+
+    input[type="text"] {
+      font-family: 'Courier New', Courier, monospace;
+      padding: 10px;
+      font-size: 18px;
+      width: 60%;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-family: 'Courier New';
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .theme-label {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #ffd700;
+    }
+
+    .mechanics {
+      font-size: 16px;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
+
+    .corner-help {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(0, 0, 0, 0.75);
+      padding: 10px;
+      border-radius: 8px;
+      z-index: 999;
+      font-size: 14px;
+    }
+
+    .corner-help button {
+      display: block;
+      margin-bottom: 5px;
+      width: 100px;
+      background-color: #222;
+      color: #ffd700;
+      border: 1px solid #444;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .hint-text {
+      margin-top: 5px;
+      color: #ffdead;
+      font-style: italic;
+      display: none;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="page-title">🔮 Truth Quest 🔮</h1>
+
+  <div id="riddle-section" class="riddle-container">
+    <img id="riddle-img" class="riddle-img" src="" alt="Riddle Image" />
+    <div id="riddle-theme" class="theme-label"></div>
+    <div id="riddle-mechanics" class="mechanics"></div>
+    <p id="riddle-text">Loading...</p>
+
+    <div id="answer-block">
+      <input type="text" id="riddle-answer" placeholder="Type your answer..." />
+      <br />
+      <button onclick="submitAnswer()" id="submit-button">Submit</button>
+    </div>
+
+    <div id="next-block" class="hidden">
+      <button onclick="goToNextRiddle()" id="next-button">Next</button>
+    </div>
+  </div>
+
+  <div id="final-message" class="hidden riddle-container">
+    <h2 id="final-title">🎉 Congratulations, Riddle Master! 🎉</h2>
+    <p id="final-text">You've solved all riddles.</p>
+  </div>
+
+  <div class="corner-help">
+    <button onclick="toggleHint('hint1')">Hint 1</button>
+    <div id="hint1" class="hint-text">Loading...</div>
+
+    <button onclick="toggleHint('hint2')">Hint 2</button>
+    <div id="hint2" class="hint-text">Loading...</div>
+
+    <button onclick="toggleHint('answer')">Answer</button>
+    <div id="answer" class="hint-text">Loading...</div>
+  </div>
+
+  <script>
+    const riddles = [
+  {
+    pageTitle: "🔮 Seer",
+    text: "I’m murmured ere time, a knave cloaked in guise,Stealing delight from unwitting eyes.I tread where tales have yet to unfold,Yet utter the fates that have long been told.What am I?",
+    answer: "Spoiler",
+    theme: "Hidden sight, prophecy, intuition",
+    mechanics: "First Scroll",
+    image: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c3919d1a-83c3-4a64-8ac1-6a4c09cffdf9/d7tj1xv-483ed0e2-0e84-49b6-bf32-effe165c5cdf.jpg/v1/fill/w_800,h_966,q_75,strp/the_seer_by_luktarig-d7tj1xv.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwic3ViIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl0sIm9iaiI6W1t7InBhdGgiOiIvZi9jMzkxOWQxYS04M2MzLTRhNjQtOGFjMS02YTRjMDljZmZkZjkvZDd0ajF4di00ODNlZDBlMi0wZTg0LTQ5YjYtYmYzMi1lZmZlMTY1YzVjZGYuanBnIiwid2lkdGgiOiI8PTgwMCIsImhlaWdodCI6Ijw9OTY2In1dXX0.jObJgzY9DMYiK5faWSe3TBiXZEkLVe2EbvLm5r6Ux1w",
+    sound: "https://www.chosic.com/wp-content/uploads/2021/08/scott-buckley-i-walk-with-ghosts(chosic.com).mp3",
+    hint1: "I may be just a word or phrase, but I have the power to unravel suspense before its time.",
+    hint2: "I often lurk in whispers, reviews, or careless tongues—beware me before watching or reading anew.",
+    revealAnswer: "Spoiler"
+  },
+  {
+    pageTitle: "Clown",
+    text: "I dwell where faces hide in guise,here truth and shadow intertwine.Beneath the mask, the secret lies—A dance of light and dark divine.In halls where none are quite the same,What am I that plays this game?",
+    answer: "Masquerade",
+    theme: "Absurdity, chaos, masks",
+    mechanics: "Second Scroll",
+    image: "https://i.pinimg.com/736x/71/e4/ea/71e4eaee9143177e8240dd76a096fa1b.jpg",
+    sound: "https://www.chosic.com/wp-content/uploads/2022/10/Ghost-Story(chosic.com).mp3",
+    hint1: "Many wear me to conceal their true face, yet all partake in my hidden dance.",
+    hint2: "I am both a gathering and a disguise, where none reveal their name or place.",
+    revealAnswer: "Masquerade"
+  },
+  {
+    pageTitle: "Magician",
+    text: "I speak without truth, yet I bend men’s minds,I walk in the dark, where reason blinds.I mimic the hand that parts the sea,But no divine touch ever walks with me.The wise may see my clever disguise,In whispered stars or talisman lies.I twist what’s real with secret art,But cannot touch the faithful heart.",
+    answer: "Sihr",
+    theme: "Illusions, knowledge, mystery",
+    mechanics: "Third Scroll",
+    image: "https://i.ibb.co/XkCQQw3F/Chat-GPT-Image-Jul-23-2025-06-55-25-PM.png",
+    sound: "https://www.chosic.com/wp-content/uploads/2025/01/Fantasy_Soundscape-chosic.com_.mp3",
+    hint1: "Many seek me here and there, Yet what I am is not halal",
+    hint2: "Search within the language you speak,for it might be in english not far from seer",
+    revealAnswer: "Sihr"
+  },
+  {
+    pageTitle: "Faceless",
+    text: "I wear no name, yet hold all faces,In shadows deep, I haunt all places.No friend to know, no past to bind,A coin’s cold whisper seals my mind.I serve the one with countless guises,Delivering silence through dark surprises.Bound by death’s unyielding claim,Yet none may call me by my name.Who am I—this ghost unseen,A vessel for the in-between?",
+    answer: "Assasin",
+    theme: "Identity loss, transformation",
+    mechanics: "Fourth Scroll",
+    image: "https://i.ibb.co/V0R1Qpsz/Chat-GPT-Image-Jul-23-2025-07-07-03-PM.png",
+    sound: "https://www.chosic.com/wp-content/uploads/2022/10/Hitman(chosic.com).mp3",
+    hint1: "Silent servants trade in death, yet wear no face to claim their breath.",
+    hint2: "Known by none, their coin-bound blade serves the many names that death has made.",
+    revealAnswer: "Assasin"
+  },
+  {
+    pageTitle: "6️Marionettist",
+    text: "A twin born in silence, lost in night,A ghost who never shows his light.With whispered words, he bends the will,Turning hope to dispair and fear, calm to chill.No name to grasp, no face to see,Yet all who meet him fall to plea.A Monster hidden behind a smile,Leading minds astray all the while.Who is this shadow, cold and sly,That plays with souls and lets them die?",
+    answer: "Johan Liebert",
+    theme: "Control, puppetry, hidden hands",
+    mechanics: "Fifth Scroll",
+    image: "https://i.ibb.co/nqPFrrWy/Chat-GPT-Image-Jul-23-2025-07-09-39-PM.png",
+    sound: "https://www.chosic.com/wp-content/uploads/2021/02/Unseen-Horrors(chosic.com).mp3",
+    hint1: "Three Frogs hotel",
+    hint2: "Experiments on children",
+    revealAnswer: "Johan Liebert"
+  },
+  {
+    pageTitle: "Bizarro Sorcerer",
+    text: "I didn't reach this level in the novel so I better not embarras myself with unrelated riddles. You've got a free pass all the way till the sequence 0 ",
+    answer: "Nightmare",
+    theme: "Paradox, unnatural logic, forbidden magic",
+    mechanics: "Sixth Scroll",
+    image: "https://i.ibb.co/jdwCNc6/Chat-GPT-Image-Jul-23-2025-07-15-41-PM.png",
+    sound: "https://www.chosic.com/wp-content/uploads/2025/04/Punch-Deck-Code-Switch-chosic.com_.mp3",
+    hint1: "Read the line backward.",
+    hint2: "The question becomes: 'What is the word? If you can solve the puzzle in my workname...'",
+    revealAnswer: "Nightmare"
+  },
+  {
+    pageTitle: "Scholar of Yore",
+    text: "",
+    answer: "Knowledge is power",
+    theme: "Ancient wisdom, memory, forgotten lore",
+    mechanics: "Seventh Scroll",
+    image: "https://i.ibb.co/zWknksKs/Chat-GPT-Image-Jul-23-2025-07-16-32-PM.png",
+    sound: "https://www.chosic.com/wp-content/uploads/2022/07/Day-of-Chaos(chosic.com).mp3",
+    hint1: "",
+    hint2: "",
+    revealAnswer: ""
+  },
+  {
+    pageTitle: "Miracle Invoker",
+    text: "",
+    answer: "64",
+    theme: "Miracles, divine intervention",
+    mechanics: "Eigth Scroll",
+    image: "https://i.ibb.co/zT9d5PXn/Screenshot-2025-07-23-at-19-17-54.png",
+    sound: "https://www.chosic.com/wp-content/uploads/2025/06/EyesInTheVoid-chosic.com_.mp3",
+    hint1: "",
+    hint2: "",
+    revealAnswer: ""
+  },
+  {
+    pageTitle: "Attendant of Mysteries",
+    text: "",
+    answer: "Footsteps",
+    theme: "Hidden truths, veil of the divine",
+    mechanics: "Ninth Scroll",
+    image: "https://i.ibb.co/67G4w1Jd/Screenshot-2025-07-23-at-19-19-23.png",
+    sound: "https://www.chosic.com/wp-content/uploads/2021/08/scott-buckley-i-walk-with-ghosts(chosic.com).mp3",
+    hint1: "",
+    hint2: "",
+    revealAnswer: ""
+  },
+  {
+    pageTitle: "Fool",
+    text: "",
+    answer: "",
+    theme: "",
+    mechanics: "Tenth Scroll",
+    image: "https://i.pinimg.com/1200x/6f/9a/b2/6f9ab27401c2cb50b3d4910143b0aa50.jpg",
+    sound: "https://cdn.pixabay.com/download/audio/2021/10/06/audio_3e0cfc41a5.mp3",
+    hint1: "",
+    hint2: "",
+    revealAnswer: ""
+  },
+  {
+  pageTitle: "🏁 Completion",
+  text: "Congratulations! You've made it to the end of the challenge and every challenge deserves a reward. How about an easy win in a battle kart this weekend ?",
+  answer: "",
+  theme: "I know that this is cringe but bear with it haha",
+  mechanics: "",
+  image: "https://i.ibb.co/GvK4D9TN/IMG-4292.jpg",
+  sound: "https://store-screenapp-production.storage.googleapis.com/vid/68814bdc3768f6670f4c8f4a/85ef9758-f20a-40d7-96f5-840d09e2ba80.mp3?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=GOOG1EINEQV5X2QGY62PSZMBMUR7IGGVLKNDB6ABP5GL6O6FKO76DWA2IE3SB%2F20250723%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20250723T205351Z&X-Amz-Expires=604800&X-Amz-Signature=8450c38e262d3f80a564d9b7c1a69f9f16fbf02551711afca24d82851bbd67f7&X-Amz-SignedHeaders=host&response-content-type=attachment%3B%20filename%3D%2285ef9758-f20a-40d7-96f5-840d09e2ba80.mp3%22%3B%20filename%2A%3D%20UTF-8%27%27aVps7M4DH4s.mp3%3B#t=0,", // Celebration music
+  hint1: "",
+  hint2: "",
+  revealAnswer: ""
+}
+
+];
+    let currentRiddle = 0;
+    let audio = new Audio();
+
+    function loadRiddle(index) {
+      const r = riddles[index];
+      document.getElementById("page-title").innerText = r.pageTitle;
+      document.getElementById("riddle-text").innerText = r.text;
+      document.getElementById("riddle-theme").innerText = `Theme: ${r.theme}`;
+      document.getElementById("riddle-mechanics").innerText = r.mechanics;
+      document.getElementById("riddle-img").src = r.image;
+      document.getElementById("riddle-answer").value = "";
+
+      document.getElementById("hint1").innerText = r.hint1 || "No hint provided.";
+      document.getElementById("hint2").innerText = r.hint2 || "No hint provided.";
+      document.getElementById("answer").innerText = r.revealAnswer || "No answer provided.";
+
+      document.getElementById("hint1").style.display = 'none';
+      document.getElementById("hint2").style.display = 'none';
+      document.getElementById("answer").style.display = 'none';
+
+      // Toggle input/submit or next button based on riddle index
+      if (currentRiddle >= 5) {
+        document.getElementById("answer-block").classList.add("hidden");
+        document.getElementById("next-block").classList.remove("hidden");
+      } else {
+        document.getElementById("answer-block").classList.remove("hidden");
+        document.getElementById("next-block").classList.add("hidden");
+      }
+
+      playSound(r.sound);
+    }
+
+    function playSound(src) {
+      audio.pause();
+      audio = new Audio(src);
+      audio.play();
+    }
+
+    function submitAnswer() {
+      const userAnswer = document.getElementById("riddle-answer").value.trim().toLowerCase();
+      if (userAnswer === riddles[currentRiddle].answer.toLowerCase()) {
+        currentRiddle++;
+        if (currentRiddle >= riddles.length) {
+          document.getElementById("riddle-section").classList.add("hidden");
+          document.getElementById("final-message").classList.remove("hidden");
+        } else {
+          loadRiddle(currentRiddle);
+        }
+      } else {
+        alert("Incorrect! Try again.");
+      }
+    }
+
+    function goToNextRiddle() {
+      currentRiddle++;
+      if (currentRiddle >= riddles.length) {
+        document.getElementById("riddle-section").classList.add("hidden");
+        document.getElementById("final-message").classList.remove("hidden");
+
+        const r = riddles[riddles.length - 1];
+        document.getElementById("final-title").innerText = r.pageTitle;
+        document.getElementById("final-text").innerText = r.text;
+        playSound(r.sound);
+      } else {
+        loadRiddle(currentRiddle);
+      }
+    }
+
+    function toggleHint(id) {
+      const el = document.getElementById(id);
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    window.onload = () => {
+      loadRiddle(currentRiddle);
+    };
+  </script>
+</body>
+</html>
+
+
+
+
+
+
