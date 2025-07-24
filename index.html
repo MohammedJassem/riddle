@@ -279,8 +279,7 @@
 }
 
 ];
-
-    let currentRiddle = 0;
+let currentRiddle = 0;
     let audio = new Audio();
 
     function startGame() {
@@ -306,9 +305,13 @@
       document.getElementById("hint2").style.display = 'none';
       document.getElementById("answer").style.display = 'none';
 
-      if (currentRiddle >= 5) {
+      if (currentRiddle >= 5 && currentRiddle < riddles.length - 1) {
         document.getElementById("answer-block").classList.add("hidden");
         document.getElementById("next-block").classList.remove("hidden");
+      } else if (currentRiddle === riddles.length - 1) {
+        // Final riddle - hide all buttons
+        document.getElementById("answer-block").classList.add("hidden");
+        document.getElementById("next-block").classList.add("hidden");
       } else {
         document.getElementById("answer-block").classList.remove("hidden");
         document.getElementById("next-block").classList.add("hidden");
@@ -332,6 +335,10 @@
         if (currentRiddle >= riddles.length) {
           document.getElementById("riddle-section").classList.add("hidden");
           document.getElementById("final-message").classList.remove("hidden");
+          const r = riddles[riddles.length - 1];
+          document.getElementById("final-title").innerText = r.pageTitle;
+          document.getElementById("final-text").innerText = r.text;
+          playSound(r.sound);
         } else {
           loadRiddle(currentRiddle);
         }
@@ -342,17 +349,8 @@
 
     function goToNextRiddle() {
       currentRiddle++;
-      if (currentRiddle >= riddles.length) {
-        document.getElementById("riddle-section").classList.add("hidden");
-        document.getElementById("final-message").classList.remove("hidden");
-
-        const r = riddles[riddles.length - 1];
-        document.getElementById("final-title").innerText = r.pageTitle;
-        document.getElementById("final-text").innerText = r.text;
-        playSound(r.sound);
-      } else {
-        loadRiddle(currentRiddle);
-      }
+      if (currentRiddle >= riddles.length) return;
+      loadRiddle(currentRiddle);
     }
 
     function toggleHint(id) {
